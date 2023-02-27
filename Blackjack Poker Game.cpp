@@ -79,14 +79,14 @@ int bestValue(std::vector<int> &values)
 	for (int i = 0; i < values.size(); i++)	{
 
 		//if the value is 22 or higher, we don't want it there
-		if (values[i] >= 22)
+		if (values.at(i) >= 22)
 		{
-			values[i] = 0;	
+			values.at(i) = 0;	
 		}
 		//otherwise let's increase the value of highestVal
-		else if (values[i] > highestVal)
+		else if (values.at(i) > highestVal)
 		{
-			highestVal = values[i];
+			highestVal = values.at(i);
 		}
 		
 	}
@@ -112,7 +112,7 @@ void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHa
 	{
 		for (int i = 0; i < hand.size(); i++) //Go through the players hand...
 		{
-			std::cout << hand[i].printCard() << " " << std::flush;//... and print each card.
+			std::cout << hand.at(i).printCard() << " " << std::flush;//... and print each card.
 		}
 		std::cout << "is your hand! \n" << std::flush;
 	}
@@ -120,7 +120,7 @@ void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHa
 	{
 		for (int i = 0; i < hand.size(); i++) //Go through the dealer's hand...
 		{
-			std::cout << hand[i].printCard() << " " << std::flush; // ... and print each card.
+			std::cout << hand.at(i).printCard() << " " << std::flush; // ... and print each card.
 		}
 		std::cout << "is the dealer's hand! \n" << std::flush;
 	}
@@ -154,15 +154,15 @@ void addValues(struct card card, std::vector <int> &values, bool isDeal)
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // this will add two values
 			{
-				values.push_back(replacementValues[i] + 1);
-				values.push_back(replacementValues[i] + 11);
+				values.push_back(replacementValues.at(i) + 1);
+				values.push_back(replacementValues.at(i) + 11);
 			}
 		}
 		else
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // just one if its not
 			{
-				values.push_back(replacementValues[i] + card.value);
+				values.push_back(replacementValues.at(i) + card.value);
 			}
 		}
 	}
