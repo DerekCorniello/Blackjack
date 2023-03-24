@@ -6,6 +6,16 @@
 #include <string>
 #include <cmath>
 
+// Define the deck of cards globally
+std::vector<struct card> deckOfCards = {}; // a vector of all of the cards in the future
+
+// Define the types for the special characters globally
+const char* hearts = "\x03";  //♥
+const char* diamond = "\x04";  //♦
+const char* clubs = "\x05";  //♣
+const char* spades = "\x06";  //♠
+
+
 /*
 * 
 * Here we define a structure called card in order to
@@ -16,30 +26,19 @@
 * the card in plain text.
 * 
 */
+
 struct card
 {
-	public:
-		const char* type = "a";
-		std::string number = "0";
-		int value = 0;
-		bool isAce = false;
-
-		std::string printCard()
-		{
-			return number + type;
-		}
+	const char* type = { "a" };
+	std::string number{ "0" };
+	int value{ 0 };
+	bool isAce{};
+	
+	std::string const printCard()
+	{
+		return number + type;
+	}
 };
-
-
-// Define the deck of cards
-std::vector<struct card> deckOfCards = {}; // a vector of all of the cards in the future
-
-// Define the types for the special characters
-const char* hearts = "\x03";  //♥
-const char* diamond = "\x04";  //♦
-const char* clubs = "\x05";  //♣
-const char* spades = "\x06";  //♠
-
 
 /*
 * 
@@ -79,14 +78,14 @@ int bestValue(std::vector<int> &values)
 	for (int i = 0; i < values.size(); i++)	{
 
 		//if the value is 22 or higher, we don't want it there
-		if (values.at(i) >= 22)
+		if (values[i] >= 22)
 		{
-			values.at(i) = 0;	
+			values[i] = 0;	
 		}
 		//otherwise let's increase the value of highestVal
-		else if (values.at(i) > highestVal)
+		else if (values[i] > highestVal)
 		{
-			highestVal = values.at(i);
+			highestVal = values[i];
 		}
 		
 	}
@@ -112,7 +111,7 @@ void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHa
 	{
 		for (int i = 0; i < hand.size(); i++) //Go through the players hand...
 		{
-			std::cout << hand.at(i).printCard() << " " << std::flush;//... and print each card.
+			std::cout << hand[i].printCard() << " " << std::flush;//... and print each card.
 		}
 		std::cout << "is your hand! \n" << std::flush;
 	}
@@ -120,7 +119,7 @@ void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHa
 	{
 		for (int i = 0; i < hand.size(); i++) //Go through the dealer's hand...
 		{
-			std::cout << hand.at(i).printCard() << " " << std::flush; // ... and print each card.
+			std::cout << hand[i].printCard() << " " << std::flush; // ... and print each card.
 		}
 		std::cout << "is the dealer's hand! \n" << std::flush;
 	}
@@ -154,15 +153,15 @@ void addValues(struct card card, std::vector <int> &values, bool isDeal)
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // this will add two values
 			{
-				values.push_back(replacementValues.at(i) + 1);
-				values.push_back(replacementValues.at(i) + 11);
+				values.push_back(replacementValues[i] + 1);
+				values.push_back(replacementValues[i] + 11);
 			}
 		}
 		else
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // just one if its not
 			{
-				values.push_back(replacementValues.at(i) + card.value);
+				values.push_back(replacementValues[i] + card.value);
 			}
 		}
 	}
@@ -468,6 +467,7 @@ void determineWinner(std::vector <int> playerValues, std::vector <int> dealerVal
 
 int main()
 {
+	//Creates a random seed for the random numbers generated later using the OS's time
 	srand((unsigned int)time(NULL));
 
 	// Define a set amount to start with for money
