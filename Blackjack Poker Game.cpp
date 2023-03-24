@@ -15,7 +15,6 @@ const char* diamond = "\x04";  //♦
 const char* clubs = "\x05";  //♣
 const char* spades = "\x06";  //♠
 
-
 /*
 * 
 * Here we define a class called card in order to
