@@ -7,7 +7,7 @@
 #include <cmath>
 
 // Define the deck of cards globally
-std::vector<struct card> deckOfCards = {}; // a vector of all of the cards in the future
+std::vector<class card> deckOfCards = {}; // a vector of all of the cards in the future
 
 // Define the types for the special characters globally
 const char* hearts = "\x03";  //♥
@@ -18,26 +18,39 @@ const char* spades = "\x06";  //♠
 
 /*
 * 
-* Here we define a structure called card in order to
+* Here we define a class called card in order to
 * store some information on cards, like it's type
 * value, and if it is an ace
 * 
-* Also defined in this structure is a method for printing
+* Also defined in this class is a method for printing
 * the card in plain text.
 * 
 */
 
-struct card
+class card
 {
-	const char* type = { "a" };
-	std::string number{ "0" };
-	int value{ 0 };
+	const char* type{};
+	std::string number{};
+	int value{};
 	bool isAce{};
-	
-	std::string const printCard()
-	{
-		return number + type;
-	}
+
+	public:
+		
+		card(const char* type, std::string number, int value, bool isAce)
+		{
+			card::type = type;
+			card::number = number;
+			card::value = value;
+			card::isAce = isAce;
+		}
+		
+		std::string const printCard()
+		{
+			return number + type;
+		}
+
+		int getValue() const { return value; }
+		bool getIsAce() const { return isAce; }
 };
 
 /*
@@ -95,7 +108,7 @@ int bestValue(std::vector<int> &values)
 /*
 * 
 * Defines a function to print a hand using the .printCard() method defined
-* in the card structure. Uses vector of the hand as well as 
+* in the card class. Uses vector of the hand as well as 
 * two boolean inputs to check if the function should only print out one
 * card (for the dealer at the beginning) or if it should print two,
 * and if it is the dealer's hand.
@@ -105,7 +118,7 @@ int bestValue(std::vector<int> &values)
 * 
 */
 
-void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHand)
+void printHand(std::vector<class card> hand, bool printOneCard, bool isDealerHand)
 {
 	if (!printOneCard && !isDealerHand) // This is the player's hand
 	{
@@ -141,7 +154,7 @@ void printHand(std::vector<struct card> hand, bool printOneCard, bool isDealerHa
 * 
 */
 
-void addValues(struct card card, std::vector <int> &values, bool isDeal)
+void addValues(class card card, std::vector <int> &values, bool isDeal)
 {
 	if (!isDeal) // make sure it is not the deal first, because these are added first.
 	{
@@ -149,7 +162,7 @@ void addValues(struct card card, std::vector <int> &values, bool isDeal)
 		values.clear(); // and clear the rest of the values
 
 		//add the new values to the old ones from the placeholder
-		if (card.isAce) // if it is an ace...
+		if (card.getIsAce()) // if it is an ace...
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // this will add two values
 			{
@@ -161,7 +174,7 @@ void addValues(struct card card, std::vector <int> &values, bool isDeal)
 		{
 			for (int i = 0; i < replacementValues.size(); i++) // just one if its not
 			{
-				values.push_back(replacementValues[i] + card.value);
+				values.push_back(replacementValues[i] + card.getValue());
 			}
 		}
 	}
@@ -180,12 +193,12 @@ void addValues(struct card card, std::vector <int> &values, bool isDeal)
 * 
 */
 
-void addRandomCard(std::vector<struct card>& Hand, std::vector <int> &values, bool isDeal)
+void addRandomCard(std::vector<class card>& Hand, std::vector <int> &values, bool isDeal)
 {
 	//use the random number and modulus to have a number between 0-51
 	int rand1 = rand() % deckOfCards.size();
 	//grab the card from the deck
-	struct card card1 = deckOfCards[rand1];
+	class card card1 = deckOfCards[rand1];
 	//delete it from the deck...
 	deckOfCards.erase(deckOfCards.begin() + rand1);
 	//and put it in the respective hand
@@ -201,7 +214,7 @@ void addRandomCard(std::vector<struct card>& Hand, std::vector <int> &values, bo
 * Parameters: the player's hand, a boolean to keep hitting, and the values of the hand
 */
 
-void hitFunction(std::vector<struct card>& playerHand, bool keepHitting, std::vector <int> values)
+void hitFunction(std::vector<class card>& playerHand, bool keepHitting, std::vector <int> values)
 {
 	//initial question
 	std::cout << "\n\nWould you like to hit? (Type 'Hit' or 'Stand') " << std::flush;
@@ -290,7 +303,7 @@ void hitFunction(std::vector<struct card>& playerHand, bool keepHitting, std::ve
 * 
 */
 
-void dealerHitFunction(std::vector<struct card> &dealerHand, std::vector <int> &values)
+void dealerHitFunction(std::vector<class card> &dealerHand, std::vector <int> &values)
 {
 	int best = bestValue(values);
 	while (best < 17) //dealer must stand on 17, so don't let them hit
@@ -314,27 +327,27 @@ void dealerHitFunction(std::vector<struct card> &dealerHand, std::vector <int> &
 * 
 */
 
-void aceCheckForValues(std::vector<struct card> hand, std::vector <int>& values)
+void aceCheckForValues(std::vector<class card> hand, std::vector <int>& values)
 {
-	if (hand[0].isAce && hand[1].isAce) //both aces yield 3 values
+	if (hand[0].getIsAce() && hand[1].getIsAce()) //both aces yield 3 values
 	{
 		values.push_back(2);
 		values.push_back(12);
 		values.push_back(20);
 	}
-	else if (hand[0].isAce) // add 1 and 11 to the other card
+	else if (hand[0].getIsAce()) // add 1 and 11 to the other card
 	{
-		values.push_back(hand[1].value + 1);
-		values.push_back(hand[1].value + 11);
+		values.push_back(hand[1].getValue() + 1);
+		values.push_back(hand[1].getValue() + 11);
 	}
-	else if (hand[1].isAce) // add 1 and 11 to the other card
+	else if (hand[1].getIsAce()) // add 1 and 11 to the other card
 	{
-		values.push_back(hand[0].value + 1);
-		values.push_back(hand[0].value + 11);
+		values.push_back(hand[0].getValue() + 1);
+		values.push_back(hand[0].getValue() + 11);
 	}
 	else // this will just be the sum of the two cards
 	{
-		values.push_back(hand[0].value + hand[1].value);
+		values.push_back(hand[0].getValue() + hand[1].getValue());
 	}
 }
 
@@ -356,57 +369,46 @@ void ShuffleDeck()
 
 	for (int i = 0; i < 4; i++) //start by changing the suit of card
 	{
-		struct card currentCard; // initialize the card to be added to the deck
+		const char* type;
 		switch (i) // the case will check if 
 		{
-		case(0):
-			currentCard.type = hearts;
-			break;
-		case(1):
-			currentCard.type = diamond;
-			break;
-		case(2):
-			currentCard.type = clubs;
-			break;
-		case(3):
-			currentCard.type = spades;
-			break;
+			case(0):
+				type = hearts;
+				break;
+			case(1):
+				type = diamond;
+				break;
+			case(2):
+				type = clubs;
+				break;
+			default:
+				type = spades;
+				break;
 		}
 
 		for (int j = 1; j < 14; ++j) //will count up from 1 until 13. 1 = A, 11 = J, 12 = Q and 13 = K, identified by a switch case
 		{
 			switch (j)
 			{
-			case (1): // Ace Case
-				currentCard.number = "A";
-				currentCard.isAce = true;
-				currentCard.value = 11;
-				break;
-			case (11): // Jack Case
-				currentCard.number = "J";
-				currentCard.isAce = false;
-				currentCard.value = 10;
-				break;
-			case (12): // Queen Case
-				currentCard.number = "Q";
-				currentCard.isAce = false;
-				currentCard.value = 10;
-				break;
-			case (13): // King Case
-				currentCard.number = "K";
-				currentCard.isAce = false;
-				currentCard.value = 10;
-				break;
-			default: // 2-10 Case
-				char str[12];
-				int num = j;
-				currentCard.isAce = false;
-				sprintf_s(str, "%d", j); // convert string to int
-				currentCard.number = str;
-				currentCard.value = j;
-				break;
+				case (1): // Ace Case
+					deckOfCards.push_back(card { type, "A", 11, true });
+					break;
+				case (11): // Jack Case
+					deckOfCards.push_back(card { type, "J", 10, false });
+					break;
+				case (12): // Queen Case
+					deckOfCards.push_back(card { type, "Q", 10, false });
+					break;
+				case (13): // King Case	
+					deckOfCards.push_back(card { type, "K", 10, false });
+					break;
+				default: // 2-10 Case
+					char str[12];
+					int num = j;
+					sprintf_s(str, "%d", j); // convert string to int
+					deckOfCards.push_back(card { type, str, j, false });
+					break;
 			}
-			deckOfCards.push_back(currentCard); //add the card to the deck
 		}
 	}
 }
@@ -511,8 +513,8 @@ int main()
 		// Play the game!
 		// Instantiate a list (vector) of both hands
 
-		std::vector<struct card> dealerHand = {};
-		std::vector<struct card> playerHand = {};
+		std::vector<class card> dealerHand = {};
+		std::vector<class card> playerHand = {};
 
 		/*  First, we need to determine the value of the hands to check and see
 		 *  if either hands contain blackjack off the bat
